@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "bash ./installheroku.sh"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +13,7 @@
     "eslint": "^3.0.1",
     "eslint-plugin-jsx-a11y": "^2.0.0",
     "exec": "^0.2.1",
+    "express": "^4.14.0",
     "request": "^2.73.0"
   },
   "eslintConfig": {
