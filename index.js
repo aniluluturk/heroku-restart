@@ -1,23 +1,36 @@
-var request = require('request');
-var options = {
-url:  'http://HEROKU_APP_URL/ping',
-    timeout: 2000
-};
-var exec = require('exec');
+/* eslint-env node, mocha */
+var HEROKU_TIMEOUT = 2000;
+var HEROKU_URL = 'http://prod-kapgel-manager.herokuapp.com/ping';
+var HEROKU_TEST_PERIOD = 10000;
 
-var ping = function (){
-request(options, function(err, resp, body) { 
-console.log(err); 
-setTimeout(ping, 10000);
-if(err) {
-exec(['heroku', 'ps:restart', '-a', 'HEROKU_APP_NAME'], function(err, out, code) {
-  if (err instanceof Error)
-    console.log(err);
-  process.stderr.write(err);
-  process.stdout.write(out);
-});
-}
-});
+var request = require('request');
+var exec = require('exec');
+var options = {
+  url: HEROKU_URL,
+  timeout: HEROKU_TIMEOUT
+};
+
+function ping() {
+  request(options, function handler(err, resp, body) { // eslint-disable-line no-unused-vars
+    console.log(err); // eslint-disable-line no-console
+    if (err) {
+      exec([
+        'heroku',
+        'ps:restart',
+        '-a',
+        'HEROKU_APP_NAME'
+      ],
+          function execHandler(errExec, out, code) {
+            if (errExec instanceof Error) {
+              throw errExec;
+            }
+            process.stderr.write(err);
+            process.stdout.write(out);
+            process.exit(code);
+          });
+    }
+    setTimeout(ping, HEROKU_TEST_PERIOD);
+  });
 }
 
 ping();
